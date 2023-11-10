@@ -56,12 +56,12 @@ def analize():
 if __name__ == '__main__':
 	work = None
 	while True:
-		try:
-			time.sleep(3)
-			print('Fetch Work.')
-			result = analize()
-			print('Analysis Result: ', result)
-			if result:
-				requests.post(SERVER_URL, json=result)
-		except Exception as e:
-			print(e)
+		# try:
+		time.sleep(3)
+		print('Fetch Work.')
+		result = analize()
+		print('Analysis Result: ', result)
+		if result:
+			requests.post(SERVER_URL, json=result)
+		# except Exception as e:
+		# 	print(e)
