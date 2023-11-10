@@ -274,7 +274,8 @@ mz_words = [['GOAT', 300, 1],
             ['영화관', 43, 47],
             ['예약', 42, 43],
             ['오락', 2, 8],
-            ['오랜', 23, 43],
+            ['오랜', 53, 57],
+            ['와', 54, 12],
             ['요소', 3, 7],
             ['우리', 33, 23],
             ['우와', 8, 2],
@@ -372,7 +373,7 @@ def mz_test_noun(noun):
     bad_poss = bad_poss/(bad_poss+not_bad_poss)
     mz_poss = mz_poss/(mz_poss+not_mz_poss)
 
-    return max(40, round(bad_poss*100)), round(mz_poss*100)
+    return max(50, round(bad_poss*100)), round(mz_poss*100)
 
 
 def mz_test_endword(sent):
@@ -400,7 +401,7 @@ def mz_test_endword(sent):
     elif mz_end_words_cnt < not_mz_end_words_cnt:
         mz_end_poss = 20
     else:
-        mz_end_poss = 30
+        mz_end_poss = 40
         
     return round(mz_end_poss)
 
@@ -435,13 +436,13 @@ def word_cnt(sent):
         mz_symbol_poss = max(10,50-(not_mz_symbol_cnt-mz_symbol_cnt)*10)
    
     else:
-        mz_symbol_poss = 40
+        mz_symbol_poss = 45
 
     return mz_single_poss, round(mz_symbol_poss)
 
 def mz_test_len(sent):
     if len(sent) < 4:
-        return 90
+        return 100
     else:
         return 45
 

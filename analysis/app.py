@@ -27,6 +27,7 @@ def predict(predict_sentence):
 
 def analize():
 	work = requests.get(SERVER_URL).json()
+	print('Start analizing: ', work['test_id'])
 
 	if len(work) == 0:
 		return False
@@ -42,6 +43,7 @@ def analize():
 			'contents': []
 		}
 		for text in chatting['texts']:
+			print('Predicting: ', text)
 			score, feedback = predict(text)
 			contents = {
 				'texts': text,
