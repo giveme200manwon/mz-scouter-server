@@ -10,12 +10,6 @@ no_bad_sum = 3041
 mz_sum = 8861
 no_mz_sum = 3628
 
-poss_sum = 0
-poss_list = []
-
-single_word_cnt = 0
-mz_symbol_cnt = 0
-not_mz_symbol_cnt = 0
 
 sosu_zari = 2
 
@@ -341,8 +335,10 @@ def cnt():
         bbb += i[2]
     print(aaa,bbb)
 
-def mz_test_noun():
-    global poss_sum, poss_list
+def mz_test_noun(sent):
+
+    noun = okt.morphs(sent)
+    
     bad_poss = bad_sum / (no_bad_sum + bad_sum)
     not_bad_poss = bad_sum / (no_bad_sum + bad_sum)
 
@@ -367,20 +363,17 @@ def mz_test_noun():
                 not_mz_poss *= (1 - j[2]/no_mz_sum)
 
     bad_poss = bad_poss/(bad_poss+not_bad_poss)
-    poss_sum += max(40, bad_poss*100)
-    print("욕설을 통한 MZ력 분석 : ",max(40, bad_poss*100),"%")
-
     mz_poss = mz_poss/(mz_poss+not_mz_poss)
-    poss_sum += mz_poss*100
-    print("사용한 단어들을 통한 MZ력 분석 : ", mz_poss*100, "%")
-    poss_list.append(round(max(40, bad_poss*100),sosu_zari))
-    poss_list.append(round(mz_poss*100, sosu_zari))
 
-def mz_test_endword():
-    global poss_sum, poss_list
+    return max(40, round(bad_poss*100),sosu_zari), round(mz_poss*100, sosu_zari)
+
+
+def mz_test_endword(sent):
+
     mz_end_words_cnt = 0
     not_mz_end_words_cnt = 0
     short_ans_cnt = 0
+
     for i in kkma.pos(sent,flatten=False):
         for j in i:
             if j[0] == 'ㅁ' or j[0] == '음':
@@ -392,7 +385,7 @@ def mz_test_endword():
                 for k in not_mz_end_words:
                     if j[0] == k:
                         not_mz_end_words_cnt += 1
-    mz_end_poss=0
+
     if short_ans_cnt:
         mz_end_poss = 100
     elif mz_end_words_cnt > not_mz_end_words_cnt:
@@ -401,47 +394,31 @@ def mz_test_endword():
         mz_end_poss = 20
     else:
         mz_end_poss = 50
-    # print("mz한 종결어미, 틀 같은 종결어미, 음슴체")
-    # print(mz_end_words_cnt, not_mz_end_words_cnt, short_ans_cnt)
-    poss_sum += mz_end_poss
-    print("종결어미를 통한 MZ력 분석 : ", mz_end_poss, "%")
-    poss_list.append(round(mz_end_poss, sosu_zari))
+        
+    return round(mz_end_poss, sosu_zari)
 
 
-def word_cnt():
-    single_word = 0
-    mz_symbol = 0
-    not_mz_symbol = 0
+def word_cnt(sent):
+    single_word_cnt = 0
+    mz_symbol_cnt = 0
+    not_mz_symbol_cnt = 0
     for word in sent:
         if word >= 'ㄱ' and word <= 'ㅎ':
-            single_word += 1
+            single_word_cnt += 1
         if word >= 'ㅏ' and word <= 'ㅡ':
-            single_word += 1
+            single_word_cnt += 1
 
         if word == '.' or word == ',' or word == '~' or word == '^' or word == '*':
-            not_mz_symbol += 1
+            not_mz_symbol_cnt += 1
         if word == '?' or word == ';' or word == '(' or word == ')':
-            mz_symbol += 1
+            mz_symbol_cnt += 1
     
-    return single_word, mz_symbol, not_mz_symbol
-
-def mz_test_single_word():
-
-    global poss_sum, poss_list
-
     if single_word_cnt > 5:
         mz_single_poss = 100
 
     else:
         mz_single_poss = single_word_mz_power[single_word_cnt]
 
-    poss_sum += mz_single_poss
-    print("자음이나 모음만 쓰이는 경우를 통한 MZ력 분석 : ", mz_single_poss, "%")
-    poss_list.append(round(mz_single_poss, sosu_zari))
-
-def mz_test_symbol():
-
-    global poss_sum, poss_list
     mz_symbol_poss=0
 
     if mz_symbol_cnt > not_mz_symbol_cnt:
@@ -453,20 +430,26 @@ def mz_test_symbol():
     else:
         mz_symbol_poss = 50
 
-    poss_sum += mz_symbol_poss
-    print("특수기호를 통한 MZ력 분석 : ", mz_symbol_poss, "%")
-    poss_list.append(round(mz_symbol_poss, sosu_zari))
+    return mz_single_poss, round(mz_symbol_poss, sosu_zari)
+
+def mz_power(sentence):
+
+    a, b = mz_test_noun(sentence)  
+    c = mz_test_endword(sentence)
+    d, e = word_cnt(sentence)
+
+    # a = 욕설 사용여부를 통한 MZ력 분석
+    # b = MZ한 단어 사용여부를 통한 MZ력 분석
+    # c = 종결어미를 통한 MZ력 분석
+    # d = 자음이나 모음만 쓰이는 경우를 통한 MZ력 분석
+    # e = 특수기호 사용을 통한 MZ력 분석
+
+    return [a, b, c, d, e]
 
 #-------------------------------start-------------------------------
 
-sent = input("문장을 입력하시오 : ")
-noun = okt.morphs(sent)
-print(noun)
-# cnt()
-mz_test_noun()
-mz_test_endword()
-single_word_cnt, mz_symbol_cnt, not_mz_symbol_cnt = word_cnt()
-mz_test_single_word()
-mz_test_symbol()
-print(poss_list)
-print("모든 분석을 통한 당신의 MZ력 : ", round(poss_sum/5,sosu_zari),"%")
+sentence = input("문장을 입력하시오 : ")
+
+print(mz_power(sentence))
+
+# print("모든 분석을 통한 당신의 MZ력 : ", round(poss_sum/5,sosu_zari),"%")
