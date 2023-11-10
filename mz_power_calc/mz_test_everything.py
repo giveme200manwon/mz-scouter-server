@@ -464,7 +464,7 @@ dsfs=okt.morphs("동해물과 백두산이")
 sdfd=kkma.pos("동해물과 백두산이", flatten=False)
 # -------------------------------start-----------------------------------
 
-cnt()
+#cnt()
 
 # while(1):
 #     sentence = input("문장을 입력하시오 : ")
