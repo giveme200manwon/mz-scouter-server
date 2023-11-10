@@ -15,7 +15,7 @@ def predict(predict_sentence):
 	result_power = mz_test_everything.mz_power(predict_sentence)
 	result_class = 1 #mz_classify.predict(predict_sentence)
 
-	result_power_mean = sum(result)/len(result)
+	result_power_mean = sum(result_power)/len(result_power)
 
 	if result_power_mean >= 40 and result_power_mean <= 50 and result_class == 1:
 		result_power_mean = 60
