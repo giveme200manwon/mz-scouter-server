@@ -6,21 +6,21 @@ import time
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from mz_power_calc import mz_test_everything
-from mz_power_ai import mz_classify
+# from mz_power_ai import mz_classify
 
 load_dotenv()
 SERVER_URL = os.getenv('SERVER_URL')
 
 def predict(predict_sentence):
 	result_power = mz_test_everything.mz_power(predict_sentence)
-	result_class = mz_classify.predict(predict_sentence)
+	# result_class = mz_classify.predict(predict_sentence)
 
-	result_power_mean = sum(result)/len(result)
+	# result_power_mean = sum(result)/len(result)
 
-	if result_power_mean >= 40 and result_power_mean <= 50 and result_class == 1:
-		result_power = 60
-	elif result_power_mean >= 50 and result_power_mean <= 60 and result_class == 0:
-		result_power = 40
+	# if result_power_mean >= 40 and result_power_mean <= 50 and result_class == 1:
+	# 	result_power = 60
+	# elif result_power_mean >= 50 and result_power_mean <= 60 and result_class == 0:
+	# 	result_power = 40
 
 	return result_power, result.index(min(result))
 	
