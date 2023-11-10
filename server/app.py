@@ -1,4 +1,6 @@
 import cherrypy
+import cherrypy_cors
+
 from dotenv import load_dotenv
 import os
 from work_queue import WorkQueue
@@ -35,13 +37,21 @@ class ClientAPIServer(object):
         data = cherrypy.request.json
         AnalysisAPIServer.work_queue.addQueue(data)
         return {}
+    
+    def OPTIONS(self):
+        cherrypy_cors.preflight(allowed_methods=['GET', 'POST'])
+        return {'method': 'non-POST'}
 
 
 if __name__ == '__main__':
     load_dotenv()
 
-    config = {'server.socket_host': '0.0.0.0',
-              'server.socket_port': int(os.getenv('PORT'))}
+    cherrypy_cors.install()
+    config = {
+        'server.socket_host': '0.0.0.0',
+        'server.socket_port': int(os.getenv('PORT')),
+        'cors.expose.on': True
+    }
     cherrypy.config.update(config)
     client_conf = {
         '/': {

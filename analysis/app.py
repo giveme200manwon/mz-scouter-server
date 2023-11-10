@@ -21,10 +21,10 @@ def analize():
 	if len(work) == 0:
 		return False
 
-	raw_chattings = work['rawChatting']
+	raw_chattings = work['chatting']
 	result = {
 		'test_id': work['test_id'],
-		'rawChatting': []
+		'chatting': []
 	}
 	for chatting in raw_chattings:
 		chattingResult = {
@@ -39,7 +39,7 @@ def analize():
 				'feedback': feedback
 			}
 			chattingResult['contents'].append(contents)
-		result['rawChatting'].append(chattingResult)
+		result['chatting'].append(chattingResult)
 	
 	return result
 
