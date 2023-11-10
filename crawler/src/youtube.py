@@ -5,7 +5,7 @@ import csv
 
 load_dotenv()
 
-video_ids = [
+video_ids_mz = [
     # MZ
     # "AVv2nHuEzu4",
     # "nha4p2e03i4",
@@ -16,21 +16,42 @@ video_ids = [
     # "Dc8xzuog374",
     # "2pi-PKzkwtA",
     # "YQKNhjSG_J0",
+    # "MHasUwq3NfU",
+    # "uZ5N-YNLIQ0",
+    # "M0O2YjP7ngw",
+    # "VwPF6ChZYvA",
+    # "gFQDBwZ4qrE",
+    # "V-ZLuXAuJ30",
+    # "WSioacgT3og"
+    # "Cba0HVXGDj8",
+    # "PtoXze9XGiQ",
+    # "t21dFWWkG5c",
+    # "xT2gqqFlNQQ",
+    "8Hj4z6vKbNU",
+    "0dZaeVh8ssE",
+    "jkW9WNhUsOs",
+    "7x6uYv8iubM",
+]
 
-    "d5JRgHy7mMk",
-    "CHqEyouf3PQ",
-    "ILGcIsxb7F4",
-    "8sZSf4bdu2w",
-    "ydAmc-oKzgM",
-    "lXKSGrgVwuM",
-    "HjLqiSADy_s",
-    "ulnCcWzl4W4",
-    "6RvCOieb1W8",
-    "42dZRZkPxBE",
+video_ids_tl = [
+    # "d5JRgHy7mMk",
+    # "CHqEyouf3PQ",
+    # "ILGcIsxb7F4",
+    # "8sZSf4bdu2w",
+    # "ydAmc-oKzgM",
+    # "lXKSGrgVwuM",
+    # "HjLqiSADy_s",
+    # "ulnCcWzl4W4",
+    # "6RvCOieb1W8",
+    # "42dZRZkPxBE",
+    # "jK8UPMSWRRQ",
+    # "ib0rbDOBY_k",
+    # "gqgXgFc5eHI",
+    # "npXaoOA2yS0"
 ]
 
 
-def save_comments(youtube, video_id):
+def save_comments(youtube, video_id, label):
     pageToken = ''
     cnt = 0
 
@@ -43,7 +64,10 @@ def save_comments(youtube, video_id):
         )
 
         response = request.execute()
-        pageToken = response['nextPageToken']
+        try:
+            pageToken = response['nextPageToken']
+        except:
+            pageToken = ''
 
         cnt += response['pageInfo']['resultsPerPage']
 
@@ -51,14 +75,14 @@ def save_comments(youtube, video_id):
 
         items = response['items']
         for item in items:
-            comments.append([1, item['snippet']['topLevelComment']
+            comments.append([label, item['snippet']['topLevelComment']
                             ['snippet']['textDisplay']])
 
-        with open(f"data/youtube/TL-{video_id}.csv", 'a') as file:
+        with open(f"data/youtube/output.csv", 'a') as file:
             writer = csv.writer(file)
             writer.writerows(comments)
 
-        if not pageToken or cnt > 1600:
+        if not pageToken:
             break
 
 
@@ -74,8 +98,11 @@ def main():
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey=DEVELOPER_KEY)
 
-    for video_id in video_ids:
-        save_comments(youtube, video_id)
+    for video_id in video_ids_mz:
+        save_comments(youtube, video_id, 1)
+
+    for video_id in video_ids_tl:
+        save_comments(youtube, video_id, 0)
 
 
 if __name__ == "__main__":
