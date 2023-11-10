@@ -458,13 +458,3 @@ def mz_power(sentence):
     # f = 단답시 추가점수, 아니면 평균점수
 
     return [a, b, c, d, e, f]
-
-# -------------------------------start-----------------------------------
-if __name__ == __main__:
-    
-    dsfs=okt.morphs("동해물과 백두산이")
-    sdfd=kkma.pos("동해물과 백두산이", flatten=False)
-
-    sentence = input("문장을 입력하시오 : ")
-    print(mz_power(sentence))
-
