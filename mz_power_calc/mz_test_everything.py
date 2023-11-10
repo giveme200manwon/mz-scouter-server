@@ -447,9 +447,8 @@ def mz_power(sentence):
     return [a, b, c, d, e]
 
 #-------------------------------start-------------------------------
-
-sentence = input("문장을 입력하시오 : ")
-
-print(mz_power(sentence))
+if __name__ == "__main__":
+    sentence = input("문장을 입력하시오 : ")
+    print(mz_power(sentence))
 
 # print("모든 분석을 통한 당신의 MZ력 : ", round(poss_sum/5,sosu_zari),"%")
