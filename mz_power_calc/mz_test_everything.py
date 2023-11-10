@@ -460,12 +460,11 @@ def mz_power(sentence):
     return [a, b, c, d, e, f]
 
 # -------------------------------start-----------------------------------
-dsfs=okt.morphs("동해물과 백두산이")
-sdfd=kkma.pos("동해물과 백두산이", flatten=False)
-# -------------------------------start-----------------------------------
+if __name__ == __main__:
+    
+    dsfs=okt.morphs("동해물과 백두산이")
+    sdfd=kkma.pos("동해물과 백두산이", flatten=False)
 
-#cnt()
+    sentence = input("문장을 입력하시오 : ")
+    print(mz_power(sentence))
 
-# while(1):
-#     sentence = input("문장을 입력하시오 : ")
-#     print(mz_power(sentence))
