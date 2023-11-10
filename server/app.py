@@ -1,6 +1,8 @@
 import cherrypy
-from calculate_power import calculate_power
+from dotenv import load_dotenv
+import os
 from work_queue import WorkQueue
+
 @cherrypy.expose
 class AnalysisAPIServer(object):
     work_queue = WorkQueue()
@@ -36,8 +38,10 @@ class ClientAPIServer(object):
 
 
 if __name__ == '__main__':
+    load_dotenv()
+
     config = {'server.socket_host': '0.0.0.0',
-              'server.socket_port': 8888}
+              'server.socket_port': int(os.getenv('PORT'))}
     cherrypy.config.update(config)
     client_conf = {
         '/': {
