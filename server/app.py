@@ -1,28 +1,45 @@
 import cherrypy
 from calculate_power import calculate_power
+from work_queue import WorkQueue
+@cherrypy.expose
+class AnalysisAPIServer(object):
+    work_queue = WorkQueue()
+    @cherrypy.tools.json_out()
+    def GET(self):
+        return AnalysisAPIServer.work_queue.popQueue()
+    
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out()
+    def POST(self):
+        data = cherrypy.request.json
+        ClientAPIServer.results.append(data)
+        return {}
 
 
 @cherrypy.expose
-class StringGeneratorWebService(object):
+class ClientAPIServer(object):
+    results = []
 
-    @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
-    def GET(self):
-        return {'msg': 'hello'}
+    def GET(self, test_id):
+        for idx, result in enumerate(ClientAPIServer.results):
+            if result['test_id'] == test_id:
+                return ClientAPIServer.results.pop(idx)
+        return {'msg': 'No such test id'}
 
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def POST(self):
         data = cherrypy.request.json
-        power = calculate_power(data)
-        return {'id': data['test_id'], 'power': power}
+        AnalysisAPIServer.work_queue.addQueue(data)
+        return {}
 
 
 if __name__ == '__main__':
     config = {'server.socket_host': '0.0.0.0',
               'server.socket_port': 8888}
     cherrypy.config.update(config)
-    conf = {
+    client_conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
             'tools.sessions.on': True,
@@ -30,4 +47,16 @@ if __name__ == '__main__':
             'tools.response_headers.headers': [('Content-Type', 'text/plain')],
         }
     }
-    cherrypy.quickstart(StringGeneratorWebService(), '/', conf)
+    analysis_conf = {
+        '/': {
+            'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+            'tools.sessions.on': True,
+            'tools.response_headers.on': True,
+            'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+        }
+    }
+    cherrypy.tree.mount(ClientAPIServer(), '/', client_conf)
+    cherrypy.tree.mount(AnalysisAPIServer(), '/analysis', analysis_conf)
+    
+    cherrypy.engine.start()
+    cherrypy.engine.block()
