@@ -13,16 +13,16 @@ SERVER_URL = os.getenv('SERVER_URL')
 
 def predict(predict_sentence):
 	result_power = mz_test_everything.mz_power(predict_sentence)
-	# result_class = mz_classify.predict(predict_sentence)
+	result_class = 1 #mz_classify.predict(predict_sentence)
 
-	# result_power_mean = sum(result)/len(result)
+	result_power_mean = sum(result)/len(result)
 
-	# if result_power_mean >= 40 and result_power_mean <= 50 and result_class == 1:
-	# 	result_power = 60
-	# elif result_power_mean >= 50 and result_power_mean <= 60 and result_class == 0:
-	# 	result_power = 40
+	if result_power_mean >= 40 and result_power_mean <= 50 and result_class == 1:
+		result_power_mean = 60
+	elif result_power_mean >= 50 and result_power_mean <= 60 and result_class == 0:
+		result_power_mean = 40
 
-	return result_power, result.index(min(result))
+	return result_power_mean, result_power.index(min(result_power))
 	
 
 def analize():
